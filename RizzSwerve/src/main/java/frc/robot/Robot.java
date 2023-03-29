@@ -661,8 +661,8 @@ public class Robot extends TimedRobot {
         drive.setIntegratorRange(-0.5, 0.5);
         drive.setTolerance(0.1);
 
-        PID_armAngle.setIntegratorRange(-0.50, 0.50); // change to ideal auto arm speed
-        PID_armAngle.setTolerance(0.1);
+        //PID_armAngle.setIntegratorRange(-0.50, 0.50); // change to ideal auto arm speed
+        //PID_armAngle.setTolerance(0.1);
 
 
         /*
@@ -688,7 +688,7 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousPeriodic() {
         drive_PID(2, 0);
-        armLift_LowerAuto(-0.5);
+        //armLift_LowerAuto(-0.5);
 
         /*
         // double elapsedTime = Timer.getFPGATimestamp() - autonomousStartTime;
