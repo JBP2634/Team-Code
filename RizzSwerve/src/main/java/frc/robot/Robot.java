@@ -183,7 +183,7 @@ public class Robot extends TimedRobot {
 
     // arcade vvv
     DifferentialDrive autonomousScuffed;
-    PIDController drive = new PIDController(kp, ki, kd);
+    PIDController drive = new PIDController(0.5, 0.0, 0.05);
 
     public void resetEncoders() {
         frontLeftSteer.setSelectedSensorPosition(0);
@@ -541,7 +541,8 @@ public class Robot extends TimedRobot {
     // execution Functions vvvvv
     @Override
     public void robotInit() {
-        UsbCamera camera = CameraServer.startAutomaticCapture();
+        UsbCamera camera0 = CameraServer.startAutomaticCapture(0);
+        UsbCamera camera1 = CameraServer.startAutomaticCapture(1);
         setMotorBreaks();
         invertMotors();
         continouousInput();
