@@ -181,8 +181,8 @@ public class Robot extends TimedRobot {
     // constants ^^^^^
     // our functions vvvvvv
 
-    // arcade vvv
-    DifferentialDrive autonomousScuffed;
+    // arcade autonomous vvv
+    //DifferentialDrive autonomousScuffed;
     PIDController drive = new PIDController(0.5, 0.0, 0.05);
 
     public void resetEncoders() {
@@ -222,6 +222,18 @@ public class Robot extends TimedRobot {
         frontRightDrive.setInverted(true);
         backLeftDrive.setInverted(true);
         backRightDrive.setInverted(true);
+    }
+
+    public void revertMotors() {
+        frontLeftSteer.setInverted(false);
+        frontRightSteer.setInverted(false);
+        backLeftSteer.setInverted(false);
+        backRightSteer.setInverted(false);
+
+        frontLeftDrive.setInverted(false);
+        frontRightDrive.setInverted(false);
+        backLeftDrive.setInverted(false);
+        backRightDrive.setInverted(false);
     }
 
     public void continouousInput() {
@@ -398,7 +410,7 @@ public class Robot extends TimedRobot {
     public boolean drive_PID(double targetXdistance_Metres, double targetYdistance_Metres) {
 
         if (isFirstTime == true) {
-            System.out.println("Starting Movement 1");
+            System.out.println("encoder for arcade reset!");
             frontLeftDrive.setSelectedSensorPosition(0);
             isFirstTime = false;
         }
@@ -408,12 +420,23 @@ public class Robot extends TimedRobot {
 
         double currentDistanceY;
         currentDistanceY = encoderLeftFrontDriveDisplacement_Meteres;
+
+        double outputXSpeed = drive.calculate(currentDistanceX, targetXdistance_Metres);
+        //autonomousScuffed.arcadeDrive(-outputXSpeed, 0);
+        arcadeDrive_AutoOnly(-outputXSpeed, 0);
+
+        if (drive.atSetpoint()) {
+            arcadeDrive_AutoOnly(0, 0);
+            System.out.println("drive Pid Fini");
+            return true;
+        }
+        return false;
+        
         // double currentSteer_Rad;
         // currentSteer_Rad = angleRad;
         // double outputYaw_RadPerSec;
 
         // if (Math.abs(targetXdistance_Metres - currentDistanceX)) {
-        double outputXSpeed = drive.calculate(currentDistanceX, targetXdistance_Metres);
         // swerveDrive(outputXSpeed, 0, 0);
         // }
         // if (Math.abs(targetYdistance_Metres - currentDistanceY) > tolerance) {
@@ -430,14 +453,6 @@ public class Robot extends TimedRobot {
         // contYSpeedField = outputXSpeed * Math.sin(angleRad) + outputYSpeed *
         // Math.cos(angleRad);
         // swerveDrive(outputXSpeed, 0, 0);
-        autonomousScuffed.arcadeDrive(-outputXSpeed, 0);
-
-        if (drive.atSetpoint()) {
-            autonomousScuffed.arcadeDrive(0, 0);
-            System.out.println("drive Pid Fini");
-            return true;
-        }
-        return false;
 
     }
 
@@ -445,7 +460,7 @@ public class Robot extends TimedRobot {
     // , boolean down
     ) {
         if (isFirstTime == true) {
-            System.out.println("Starting Movement arm1");
+            System.out.println("encoder for arm reset!");
             rightArmSide.setSelectedSensorPosition(0);
             isFirstTime = false;
         }
@@ -610,8 +625,47 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("pid frontLeft Error", pidFrontLeftTurn.getPositionError());
     }
 
+    //auto constants and functions vvv -move this up later
+    boolean driveFwd1 = false;
+    boolean armMove1 = false;
+    boolean armMove2 = false;
+    boolean turnRight1 = false;
+    boolean autoEnd = false;
+/*
+    public void topConePlacement (){
+        armLift_LowerAuto(0);
+        armExtender_Auto(0);
+
+    }
+ */
+
+    public void arcadeDrive_AutoOnly(double xSpeed, double turnSpeed){
+        MotorControllerGroup leftSideTalon = new MotorControllerGroup(frontLeftDrive, backLeftDrive);
+        MotorControllerGroup rightSideTalon = new MotorControllerGroup(frontRightDrive, backRightDrive);
+        DifferentialDrive autonomousScuffed = new DifferentialDrive(leftSideTalon, rightSideTalon);
+        autonomousScuffed.arcadeDrive(xSpeed, turnSpeed);
+
+        if (autoEnd == true){
+            xSpeed = 0.0;
+            turnSpeed = 0.0;
+            leftSideTalon.close();
+            rightSideTalon.close();
+            autonomousScuffed.close();
+        }
+    }
+
     @Override
     public void autonomousInit() {
+        revertMotors();
+
+        drive.setIntegratorRange(-0.5, 0.5);
+        drive.setTolerance(0.1);
+
+        PID_armAngle.setIntegratorRange(-0.50, 0.50); // change to ideal auto arm speed
+        PID_armAngle.setTolerance(0.1);
+
+
+        /*
         MotorControllerGroup leftSideTalon = new MotorControllerGroup(frontLeftDrive, backLeftDrive);
         MotorControllerGroup rightSideTalon = new MotorControllerGroup(frontRightDrive, backRightDrive);
         autonomousScuffed = new DifferentialDrive(leftSideTalon, rightSideTalon);
@@ -626,22 +680,17 @@ public class Robot extends TimedRobot {
         timer.start();
         frontLeftDrive.setSensorPhase(true);
         // rightArmSide.setSensorPhase(true);
+         */
+
         System.out.println("Init Autonamous");
     }
 
-    boolean driveFwd1 = false;
-    boolean armMove1 = false;
-    boolean armMove2 = false;
-    boolean turnRight1 = false;
-/*
-    public void topConePlacement (){
-        armLift_LowerAuto(0);
-        armExtender_Auto(0);
-
-    }
- */
     @Override
     public void autonomousPeriodic() {
+        drive_PID(2, 0);
+        armLift_LowerAuto(-0.5);
+
+        /*
         // double elapsedTime = Timer.getFPGATimestamp() - autonomousStartTime;
         // if (elapsedTime <= 5){
         if (timer.get() <= 5) {
@@ -685,15 +734,14 @@ public class Robot extends TimedRobot {
         // public void maintainDistance(double duration) {
         // maintainDistance = true;
         // maintainDuration = duration;
-        // }
+        // } */
     }
 
     @Override
     public void autonomousExit() {
-        frontLeftDrive.setSensorPhase(false);
-        rightArmSide.setSensorPhase(false);
+        invertMotors();
+        autoEnd = true;
         System.out.println("Exit Autonamous");
-        autonomousScuffed.close();
     }
 
     @Override
