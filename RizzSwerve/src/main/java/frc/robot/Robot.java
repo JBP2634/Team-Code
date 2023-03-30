@@ -7,6 +7,8 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.WPI_CANCoder;
@@ -602,6 +604,34 @@ public class Robot extends TimedRobot {
         }
     }
 
+    public void alignMotorsToYaw(double frontLeftAligned, double frontRightAligned, double backLeftAligned, double backRightAligned) {
+        double yaw = navx.getYaw();
+        double frontLeftTarget = yaw + frontLeftAligned;
+        double frontRightTarget = yaw + frontRightAligned;
+        double backLeftTarget = yaw + backLeftAligned;
+        double backRightTarget = yaw + backRightAligned;
+        
+        double frontLeftCurrent = frontLeftAbsEncoder.getAbsolutePosition();
+        double frontRightCurrent = frontRightAbsEncoder.getAbsolutePosition();
+        double backLeftCurrent = backLeftAbsEncoder.getAbsolutePosition();
+        double backRightCurrent = backRightAbsEncoder.getAbsolutePosition();
+        
+        double frontLeftDelta = frontLeftCurrent - frontLeftAligned;
+        double frontRightDelta = frontRightCurrent - frontRightAligned;
+        double backLeftDelta = backLeftCurrent - backLeftAligned;
+        double backRightDelta = backRightCurrent - backRightAligned;
+        
+        double frontLeftAdjusted = frontLeftTarget + frontLeftDelta;
+        double frontRightAdjusted = frontRightTarget + frontRightDelta;
+        double backLeftAdjusted = backLeftTarget + backLeftDelta;
+        double backRightAdjusted = backRightTarget + backRightDelta;
+        
+        frontLeftSteer.set(ControlMode.Position, frontLeftAdjusted);
+        frontRightSteer.set(ControlMode.Position, frontRightAdjusted);
+        backLeftSteer.set(ControlMode.Position, backLeftAdjusted);
+        backRightSteer.set(ControlMode.Position, backRightAdjusted);
+    }
+
     // execution Functions vvvvv
     @Override
     public void robotInit() {
@@ -618,13 +648,18 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotPeriodic() {
-
+        /*
         if (timerRobot.get() <= 5) {
         absolutePosition();
         straightenModules();
         resetEncoders();
         }
-         
+       
+        if (timerRobot.get() <= 5) {
+        alignMotorsToYaw(frontLeftAbsOffset, frontRightAbsOffset, backLeftAbsOffset, backRightAbsOffset);
+        resetEncoders();
+        }
+          */
         // claw vvv
         // claw_Wheels.set(constant_claw_WheelSpeed);
 
