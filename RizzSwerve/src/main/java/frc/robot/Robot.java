@@ -445,34 +445,37 @@ public class Robot extends TimedRobot {
         currentDistanceR = angleRad;
         double outPutR=0;
 
+        double toleranc = 0.1;
         double xSpeed = 0.30;
         double xSpeed_Rev = -0.30;
         double ySpeed = 0.30;
         double ySpeed_Rev = -0.30;
         double zSpeed = 0.30;
         double zSpeed_Rev = -0.30;
-
-        if (currentDistanceX < targetX) {
-            outPutX = xSpeed;
-        } 
-        if (currentDistanceX > targetX){
-            outPutX = -xSpeed;
+        if (Math.abs(targetX-currentDistanceX) > toleranc) {
+            if (currentDistanceX < targetX) {
+                outPutX = xSpeed;
+            } 
+            if (currentDistanceX > targetX){
+                outPutX = -xSpeed;
         }
-
-        if (currentDistanceY < targetY) {
-            outPutY = ySpeed;
-        } 
-        if (currentDistanceY > targetY){
-            outPutY = -ySpeed;
+    }
+        if (Math.abs(targetX-currentDistanceX) > toleranc) {
+            if (currentDistanceY < targetY) {
+                outPutY = ySpeed;
+            } 
+            if (currentDistanceY > targetY){
+                outPutY = -ySpeed;
         }
-
-        if (currentDistanceR < targetR) {
-            outPutR = zSpeed;
-        } 
-        if (currentDistanceR > targetR){
-            outPutR = -zSpeed;
+    }
+        if (Math.abs(targetX-currentDistanceX) > toleranc) {
+            if (currentDistanceR < targetR) {
+                outPutR = zSpeed;
+            } 
+            if (currentDistanceR > targetR){
+                outPutR = -zSpeed;
         }
-
+    }
         swerveDrive(outPutX, outPutY, outPutR);
     }
 
@@ -522,7 +525,7 @@ public class Robot extends TimedRobot {
 
     public void armExtend_EncoderIF(double targetX_arm){
         double outputx_arm=0;
-        double currentDistanceX_arm = armRad_current;
+        double currentDistanceX_arm = extenstionEncoder_CurrentMetres;
         double armExtend_Speed = 0.20;
         double armExtend_Speed_rEV = -0.10;
 
@@ -736,7 +739,57 @@ public class Robot extends TimedRobot {
             driveSwerve_EncoderIf(-0.5, 0, 0);
         }
     }
-
+/*things to have auto do
+ * turn around and put cone on target
+ * drive around/over balancer OR stop on platform and end
+ * pick up object
+ * balence on platform/put object on target if enough time, end if not
+ * 
+ * pseudo code that will not work
+ * 
+ * if (timerAuto.get() < 3){
+ * //driveSwerve_EncoderIf(0,0,3.14); 180 turn, unnecessary if starting backwards
+ * armRotate_EncoderIF(2); raise arm to 2 rads, about where top goal is
+ * }
+ * if (timerAuto.get() < 6){
+ * armExtend_EncoderIF(0.60); extend arm to 60cm out
+ * }
+ * if (timerAuto.get() < 6.5){
+ * dSolenoidClaw.set(Value.kReverse); drop object
+ * }
+ * if (timerAuto.get() < 9){
+ * driveSwerve_EncoderIf(-0.5, 0, 0); back up 0.5 m onto the platform
+ * }
+ * if (timerAuto.get() < 15){
+ * autoBalance()
+ * }
+ * 
+ * alternatively:
+ * if (timerAuto.get() < 8){
+ * driveSwerve_EncoderIf(0, 0.5, 0); 0.5 m left to avoid platform
+ * }
+ * if (timerAuto.get() < 11){
+ * driveSwerve_EncoderIf(-1, 0, 0); 1 m back 
+ * }
+ * if (timerAuto.get() < 12.5){
+ * driveSwerve_EncoderIf(0, -0.5, 0); 0.5 m right
+ * }
+ * if (timerAuto.get() < 15.5){
+ * armRotate_EncoderIF(0.4); lower arm to 0.4 rads to pick object
+ * armExtend_EncoderIF(0.05); extend arm to 5cm out
+ * dSolenoidClaw.set(Value.kforward); open claw
+ * }
+ * if (timerAuto.get() < 16){
+ * dSolenoidClaw.set(Value.kReverse); close on object
+ * }
+ * if (timerAuto.get() < 18){
+ * driveSwerve_EncoderIf(0.5, 0, 0); drive forward
+ * armRotate_EncoderIF(1); raise arm to 1 rad to prevent it from impacting balancing
+ * }
+ * if (timerAuto.get() < 20){
+ * autoBalance()
+ * }
+ */
     @Override
     public void autonomousExit() {
         //invertMotors();
