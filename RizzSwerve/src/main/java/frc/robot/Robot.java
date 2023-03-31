@@ -615,11 +615,13 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousPeriodic() {
         //drive to balance vvv
+        /*
         if (timerAuto.get() < 1.265){
             swerveDrive(-0.7, 0, 0);
         }else{
             swerveDrive(0, 0, 0);
         }
+        */
 
         // or drive fwd past line vvv
         /*
@@ -629,6 +631,13 @@ public class Robot extends TimedRobot {
             swerveDrive(0, 0, 0);
         }
         */
+
+        // drive encoders vvv
+        if (timerAuto.get() < 10){
+            driveSwerve_EncoderIf(3, 0, 0);
+        }else{
+            swerveDrive(0, 0, 0);
+        }
     }
 
     @Override
