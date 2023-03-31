@@ -731,9 +731,11 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousPeriodic() {
-        if (timerAuto.get() < 1){
-            driveSwerve_EncoderIf(0.7, 0, 0);
-        }else if (timerAuto.get() < 10){
+        if (timerAuto.get() < 2){
+            swerveDrive(0.7, 0, 0);
+        }else{
+            swerveDrive(0, 0, 0);
+        }
             /*
             armExtend_EncoderIF(0.60);
         }else if (timerAuto.get() < 15){
