@@ -420,8 +420,25 @@ public class Robot extends TimedRobot {
             } 
             if (currentDistanceX > targetX){
                 outPutX = -xSpeed;
-            }
         }
+    }
+        if (Math.abs(targetX-currentDistanceX) > toleranc) {
+            if (currentDistanceY < targetY) {
+                outPutY = ySpeed;
+            } 
+            if (currentDistanceY > targetY){
+                outPutY = -ySpeed;
+        }
+    }
+        if (Math.abs(targetX-currentDistanceX) > toleranc) {
+            if (currentDistanceR < targetR) {
+                outPutR = zSpeed;
+            } 
+            if (currentDistanceR > targetR){
+                outPutR = -zSpeed;
+        }
+    }
+        swerveDrive(outPutX, outPutY, outPutR);
     }
     
  public boolean armLift_LowerAuto(double targetDistanceRads
