@@ -393,53 +393,36 @@ public class Robot extends TimedRobot {
         }
     }
 
-/*
-    public boolean drive_PID(double targetXdistance_Metres, double targetYdistance_Metres) {
-
-        if (isFirstTime == true) {
-            System.out.println("Starting Movement 1");
-            frontLeftDrive.setSelectedSensorPosition(0);
-            isFirstTime = false;
-        }
+    public void driveSwerve_EncoderIf(double targetX, double targetY, double targetR){
 
         double currentDistanceX;
         currentDistanceX = encoderLeftFrontDriveDisplacement_Meteres;
+        double outPutX=0;
 
         double currentDistanceY;
         currentDistanceY = encoderLeftFrontDriveDisplacement_Meteres;
-        // double currentSteer_Rad;
-        // currentSteer_Rad = angleRad;
-        // double outputYaw_RadPerSec;
+        double outPutY=0;
 
-        // if (Math.abs(targetXdistance_Metres - currentDistanceX)) {
-        double outputXSpeed = drive.calculate(currentDistanceX, targetXdistance_Metres);
-        // swerveDrive(outputXSpeed, 0, 0);
-        // }
-        // if (Math.abs(targetYdistance_Metres - currentDistanceY) > tolerance) {
-        // double outputYSpeed = drive.calculate(currentDistanceY,
-        // targetYdistance_Metres);
-        // swerveDrive(0, outputYSpeed, 0);
-        // }
-        // if (Math.abs(target_RadDis - currentSteer_Rad) > tolerance) {
-        // outputYaw_RadPerSec = drive.calculate(currentSteer_Rad, target_RadDis);
-        // swerveDrive(0, 0, outputYaw_Rad);
-        // }
-        // contXSpeedField = outputXSpeed * Math.cos(angleRad) - outputYSpeed *
-        // Math.sin(angleRad);
-        // contYSpeedField = outputXSpeed * Math.sin(angleRad) + outputYSpeed *
-        // Math.cos(angleRad);
-        // swerveDrive(outputXSpeed, 0, 0);
-        autonomousScuffed.arcadeDrive(-outputXSpeed, 0);
+        double currentDistanceR;
+        currentDistanceR = angleRad;
+        double outPutR=0;
 
-        if (drive.atSetpoint()) {
-            autonomousScuffed.arcadeDrive(0, 0);
-            System.out.println("drive Pid Fini");
-            return true;
+        double toleranc = 0.1;
+        double xSpeed = 0.30;
+        double xSpeed_Rev = -0.30;
+        double ySpeed = 0.30;
+        double ySpeed_Rev = -0.30;
+        double zSpeed = 0.30;
+        double zSpeed_Rev = -0.30;
+        if (Math.abs(targetX-currentDistanceX) > toleranc) {
+            if (currentDistanceX < targetX) {
+                outPutX = xSpeed;
+            } 
+            if (currentDistanceX > targetX){
+                outPutX = -xSpeed;
+            }
         }
-        return false;
-
     }
- */
     
  public boolean armLift_LowerAuto(double targetDistanceRads
     // , boolean down
