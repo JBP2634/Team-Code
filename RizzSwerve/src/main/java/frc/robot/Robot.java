@@ -731,15 +731,16 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousPeriodic() {
-        if (timerAuto.get() < 5){
-            armRotate_EncoderIF(0.349066);
+        if (timerAuto.get() < 1){
+            driveSwerve_EncoderIf(0.7, 0, 0);
         }else if (timerAuto.get() < 10){
+            /*
             armExtend_EncoderIF(0.60);
         }else if (timerAuto.get() < 15){
             dSolenoidClaw.set(Value.kReverse);
         }else if (timerAuto.get() < 20){
-            driveSwerve_EncoderIf(-0.5, 0, 0);
-        }
+            //driveSwerve_EncoderIf(-0.5, 0, 0);
+        } */
     }
 /*things to have auto do
  * turn around and put cone on target
