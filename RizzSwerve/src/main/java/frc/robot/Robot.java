@@ -258,6 +258,7 @@ public class Robot extends TimedRobot {
     }
 
     public void swerveDrive(double xSpeed, double ySpeed, double rotSpeed) {
+        absolutePosition();
         ChassisSpeeds desiredSpeeds = new ChassisSpeeds(xSpeed * maxSpeedMpS, ySpeed * maxSpeedMpS, rotSpeed);
 
         // make desiredSpeeds into speeds and angles for each module
@@ -292,16 +293,16 @@ public class Robot extends TimedRobot {
         // set steer motor power to the pid output of current position in radians and
         // desired position in radians
         double frontLeftTurnPower = pidFrontLeftTurn.calculate(
-                frontLeftSteer.getSelectedSensorPosition() * kTurningEncoderTicksToRad,
+                (frontLeftSteer.getSelectedSensorPosition() * kTurningEncoderTicksToRad)/* - frontLeftAbsAngle */,
                 frontLeftOptimized.angle.getRadians());
         double frontRightTurnPower = pidFrontRightTurn.calculate(
-                frontRightSteer.getSelectedSensorPosition() * kTurningEncoderTicksToRad,
+                (frontRightSteer.getSelectedSensorPosition() * kTurningEncoderTicksToRad)/* - frontRightAbsAngle */,
                 frontRightOptimized.angle.getRadians());
         double backLeftTurnPower = pidBackLeftTurn.calculate(
-                backLeftSteer.getSelectedSensorPosition() * kTurningEncoderTicksToRad,
+                (backLeftSteer.getSelectedSensorPosition() * kTurningEncoderTicksToRad)/* - backLeftAbsAngle */,
                 backLeftOptimized.angle.getRadians());
         double backRightTurnPower = pidBackRightTurn.calculate(
-                backRightSteer.getSelectedSensorPosition() * kTurningEncoderTicksToRad,
+                (backRightSteer.getSelectedSensorPosition() * kTurningEncoderTicksToRad)/* - backRightAbsAngle */,
                 backRightOptimized.angle.getRadians());
 
         // positive is clockwise (right side up)
@@ -583,6 +584,7 @@ public class Robot extends TimedRobot {
         backLeftAbsAngle = (backLeftAbsEncoder.getAbsolutePosition() - backLeftAbsOffset) * (Math.PI / 180);
         backRightAbsAngle = (backRightAbsEncoder.getAbsolutePosition() - backRightAbsOffset) * (Math.PI / 180);
     }
+    
 
     public void straightenModules() {
         if (Math.abs(frontLeftAbsAngle) > 0.0 ||
@@ -724,7 +726,7 @@ public class Robot extends TimedRobot {
         //revertMotors();
         timerAuto.reset();
         timerAuto.start();
-        System.out.println("Init Autonamous");
+        System.out.println("Init Autonomous");
     }
 
     @Override
