@@ -311,11 +311,13 @@ public class Robot extends TimedRobot {
     }
 
     public void limitationArmRise(double getCurrent_ArmAngleRad) {
+        
         if (getCurrent_ArmAngleRad <= maxArmAngleRad) {
             armRotate.tankDrive(-speed_armRotation, speed_armRotation); // go down
             // armLift_LowerAuto(-1.5, 0);
             armAngleLimited = true; // set flag to indicate arm angle is being limited
         }
+        
         if (getCurrent_ArmAngleRad >= minArmAngleRad) {
             armRotate.tankDrive(speed_armRotation, -speed_armRotation); // go up
             // armLift_LowerAuto(, 0);
@@ -329,12 +331,12 @@ public class Robot extends TimedRobot {
     }
 
     public void limitationArmExtend(double getCurrent_ArmExtendMetres) {
-        
+/*
         if (getCurrent_ArmExtendMetres < minArmExtend_Metres) {
             armTalonExtenstion.set(armTalonExtenstionSpeed_autoExtend);
             armExtendLimited = true; // set flag to indicate arm angle is being limited
         }
- 
+ */
         if (getCurrent_ArmExtendMetres > maxArmExtend_Metres) {
             armTalonExtenstion.set(-armTalonExtenstionSpeed_autoRetreat);
             armExtendLimited = true;
@@ -370,13 +372,13 @@ public class Robot extends TimedRobot {
         if (extendArm == true) {
             armTalonExtenstion.set(armTalonExtenstionSpeed_Out);
         } else if (retractArm == true) {
-            /*
-            if (extendLimitSwitch.get()){
+            
+            if (!extendLimitSwitch.get()){
                 armTalonExtenstion.set(-armTalonExtenstionSpeed_In);
-            } else if (!extendLimitSwitch.get()) {
+            } else if (extendLimitSwitch.get()) {
                 armTalonExtenstion.set(0);
             }
-        } else { */
+        } else { 
             armTalonExtenstion.set(0);
         }
 
@@ -631,9 +633,12 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousPeriodic() {
         //drive to balance vvv
-        if (timerAuto.get() < 2){
+        if (timerAuto.get() < 0.5){
+            swerveDrive(0.7, 0, 0);
+        }else if (timerAuto.get() < 2){
             swerveDrive(-0.7, 0, 0);
-        }else{
+        }
+        else{
             swerveDrive(0, 0, 0);
         }
 
@@ -655,16 +660,16 @@ public class Robot extends TimedRobot {
     public void teleopInit() {
     }
 
-    //DigitalInput extendLimitSwitch = new DigitalInput(9);
+    DigitalInput extendLimitSwitch = new DigitalInput(9);
 
-    /*public void setMotorSpeed_limitinExtendWHenToFar(double speed) {
+    public void setMotorSpeed_limitinExtendWHenToFar(double speed) {
         if (speed < 0) {
             if (extendLimitSwitch.get()) {
                 armTalonExtenstion.set(0);
             } 
         }
     }
-*/
+
     @Override
     public void teleopPeriodic() {
 
@@ -672,11 +677,11 @@ public class Robot extends TimedRobot {
         SmartDashboard.putBoolean("armAngleLimited: ", armAngleLimited);
 
         limitationArmExtend(extenstionEncoder_CurrentMetres);
-        //SmartDashboard.putBoolean("armExtendLimited: ", armExtendLimited);
-        //setMotorSpeed_limitinExtendWHenToFar(-armTalonExtenstionSpeed_autoRetreat);
+        SmartDashboard.putBoolean("armExtendLimited: ", armExtendLimited);
+        setMotorSpeed_limitinExtendWHenToFar(-armTalonExtenstionSpeed_autoRetreat);
 
-        //SmartDashboard.putBoolean("retractLimitSwitch: ", extendLimitSwitch.get());
-        //System.out.println(extendLimitSwitch.get());
+        SmartDashboard.putBoolean("retractLimitSwitch: ", extendLimitSwitch.get());
+        System.out.println(extendLimitSwitch.get());
 
         // swerve vvv (uses driving_xBoxCont)
         double contXSpeed = removeDeadzone(1) * XdriveSensitivity;
