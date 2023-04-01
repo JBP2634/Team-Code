@@ -166,7 +166,7 @@ public class Robot extends TimedRobot {
     private final CANSparkMax claw_Wheels = new CANSparkMax(13, MotorType.kBrushless);
     double ClawIntake_WheelSpeed = -1;
     double ClawIntake_WheelSpeed_SLOW = -0.10;
-    double ClawExpel_WheelSpeed = 0.50;
+    double ClawExpel_WheelSpeed = 0.40;
 
     // pnuematics vvv
     private final DoubleSolenoid dSolenoidClaw = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 5, 4);
