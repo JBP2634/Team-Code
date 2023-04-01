@@ -329,12 +329,12 @@ public class Robot extends TimedRobot {
     }
 
     public void limitationArmExtend(double getCurrent_ArmExtendMetres) {
-        /*
+        
         if (getCurrent_ArmExtendMetres < minArmExtend_Metres) {
             armTalonExtenstion.set(armTalonExtenstionSpeed_autoExtend);
             armExtendLimited = true; // set flag to indicate arm angle is being limited
         }
- */
+ 
         if (getCurrent_ArmExtendMetres > maxArmExtend_Metres) {
             armTalonExtenstion.set(-armTalonExtenstionSpeed_autoRetreat);
             armExtendLimited = true;
@@ -370,12 +370,13 @@ public class Robot extends TimedRobot {
         if (extendArm == true) {
             armTalonExtenstion.set(armTalonExtenstionSpeed_Out);
         } else if (retractArm == true) {
+            /*
             if (extendLimitSwitch.get()){
                 armTalonExtenstion.set(-armTalonExtenstionSpeed_In);
             } else if (!extendLimitSwitch.get()) {
                 armTalonExtenstion.set(0);
             }
-        } else {
+        } else { */
             armTalonExtenstion.set(0);
         }
 
@@ -654,7 +655,8 @@ public class Robot extends TimedRobot {
     public void teleopInit() {
     }
 
-    DigitalInput extendLimitSwitch = new DigitalInput(9);
+    //DigitalInput extendLimitSwitch = new DigitalInput(9);
+
     /*public void setMotorSpeed_limitinExtendWHenToFar(double speed) {
         if (speed < 0) {
             if (extendLimitSwitch.get()) {
@@ -673,8 +675,8 @@ public class Robot extends TimedRobot {
         //SmartDashboard.putBoolean("armExtendLimited: ", armExtendLimited);
         //setMotorSpeed_limitinExtendWHenToFar(-armTalonExtenstionSpeed_autoRetreat);
 
-        SmartDashboard.putBoolean("retractLimitSwitch: ", extendLimitSwitch.get());
-        System.out.println(extendLimitSwitch.get());
+        //SmartDashboard.putBoolean("retractLimitSwitch: ", extendLimitSwitch.get());
+        //System.out.println(extendLimitSwitch.get());
 
         // swerve vvv (uses driving_xBoxCont)
         double contXSpeed = removeDeadzone(1) * XdriveSensitivity;
