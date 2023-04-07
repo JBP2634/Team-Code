@@ -638,6 +638,26 @@ public class Robot extends TimedRobot {
         return false;
     }
 
+    public void autoBalance() {
+        double outputPitch = 0;
+        double currentPitch;
+        double targetAnglePitch = 0;
+        double tolerance = 5;
+        currentPitch = navxPitch_Deg;
+        double maxDriveDistance = 1.22; // maximum allowed drive distance before robot is considered to be off the platform
+        double currentDriveDistanceX = encoderLeftFrontDriveDisplacement_Meteres;
+
+        if (Math.abs(targetAnglePitch - currentPitch) > tolerance) {
+            outputPitch = pidPitch.calculate(currentPitch, targetAnglePitch);
+        }
+        
+        if (Math.abs(currentDriveDistanceX) > maxDriveDistance) {
+            swerveDrive(0, 0, 0); // stop robot from moving if it has driven too far
+        } else {
+            swerveDrive(outputPitch, 0, 0);
+        }
+    }
+
     @Override
     public void autonomousInit() {
         timerAuto.reset();
