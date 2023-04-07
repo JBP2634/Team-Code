@@ -693,7 +693,6 @@ public class Robot extends TimedRobot {
         driveSwerve_EncoderIf_FwdAndBwd(2);
     }else
         autoBalance();
-        
     } 
 
     public void autoMidBalance() {
