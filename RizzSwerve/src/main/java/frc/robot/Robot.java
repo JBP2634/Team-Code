@@ -185,7 +185,7 @@ public class Robot extends TimedRobot {
     boolean dSolenoidClaw_ButtonPressed = false;
 
     // navx2 vvv
-    final double kp_Pitch = 0.03;
+    final double kp_Pitch = 0.01;
     //final double kp_Yaw = 0.03;
     final double ki_Navx = 0.0;
     final double kd_Navx = 0.0;
@@ -664,7 +664,6 @@ public class Robot extends TimedRobot {
 
         if (Math.abs(targetAnglePitch - currentPitch) > tolerance) {
             outputPitch = pidPitch.calculate(currentPitch, targetAnglePitch);
-            System.out.println("outputPitch: "+outputPitch);
         } else {
             outputPitch = 0;
         }
@@ -690,7 +689,9 @@ public class Robot extends TimedRobot {
 
         // autoBlueBottomRedTop(); //testing
         // autoBlueTopRedBottom(); //testing
-
+        if(timerAuto.get()<5){
+        driveSwerve_EncoderIf_FwdAndBwd(2);
+    }else
         autoBalance();
         
     } 
