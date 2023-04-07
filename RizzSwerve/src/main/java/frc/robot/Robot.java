@@ -185,13 +185,13 @@ public class Robot extends TimedRobot {
     boolean dSolenoidClaw_ButtonPressed = false;
 
     // navx2 vvv
-    final double kp_Pitch = 0.1;
-    final double kp_Yaw = 0.1;
-    final double ki_Navx = 0.05;
-    final double kd_Navx = 0.05;
+    final double kp_Pitch = 0.03;
+    //final double kp_Yaw = 0.03;
+    final double ki_Navx = 0.0;
+    final double kd_Navx = 0.0;
     AHRS navx = new AHRS(SPI.Port.kMXP);
     PIDController pidPitch = new PIDController(kp_Pitch, ki_Navx, kd_Navx);
-    PIDController pidYaw = new PIDController(kp_Yaw, ki_Navx, kd_Navx);
+    //PIDController pidYaw = new PIDController(kp_Yaw, ki_Navx, kd_Navx);
     double navxYaw_Deg;
     double navxPitch_Deg;
     double navxRoll_Deg;
@@ -527,15 +527,19 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("backRightAbs Offset", backRightAbsEncoder.getAbsolutePosition());
 
         // pid charts vvv
+        SmartDashboard.putNumber("pidPitch error", pidPitch.getPositionError());
+
         // auto vvv
         SmartDashboard.putNumber("drive PID (atm used for x, y and turn of autonomous)", drive.getPositionError());
         SmartDashboard.putNumber("PID_armAngle", PID_armAngle.getPositionError());
 
         // aline vvv
+        /*
         SmartDashboard.putNumber("pid_frontLeft_Error", pidFrontLeftTurn.getPositionError());
         SmartDashboard.putNumber("pid_frontRight_Error", pidFrontRightTurn.getPositionError());
         SmartDashboard.putNumber("pid_backLeft_Error", pidBackLeftTurn.getPositionError());
         SmartDashboard.putNumber("pid_backRight_Error", pidBackRightTurn.getPositionError());
+         */
     }
 
     public boolean driveSwerve_EncoderIf_FwdAndBwd(double targetX) {
@@ -651,6 +655,23 @@ public class Robot extends TimedRobot {
         return false;
     }
 
+    public void autoBalance() {
+        double outputPitch;
+        double currentPitch;
+        double targetAnglePitch = 0;
+        double tolerance = 5;
+        currentPitch = navxPitch_Deg;
+
+        if (Math.abs(targetAnglePitch - currentPitch) > tolerance) {
+            outputPitch = pidPitch.calculate(currentPitch, targetAnglePitch);
+            System.out.println("outputPitch: "+outputPitch);
+        } else {
+            outputPitch = 0;
+        }
+        
+        swerveDrive(outputPitch, 0, 0);
+    }
+
     @Override
     public void autonomousInit() {
         timerAuto.reset();
@@ -665,10 +686,13 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousPeriodic() {
         // autoMidBalance(); //balance
-        autoTopAndBottom(); //not balance
+        //autoTopAndBottom(); //not balance
 
         // autoBlueBottomRedTop(); //testing
         // autoBlueTopRedBottom(); //testing
+
+        autoBalance();
+        
     } 
 
     public void autoMidBalance() {
