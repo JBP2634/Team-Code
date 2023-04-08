@@ -133,7 +133,7 @@ public class Robot extends TimedRobot {
     double encoderleftFrontSteer_Rad;
     double XdriveSensitivity = 1;
     double YdriveSensitivity = 1; // do not change above 1
-    double turningSensitivity = 25; // radians
+    double turningSensitivity = 30; // radians
     double maxSpeedMpS = 20; // metres/sec
 
     Translation2d m_frontLeftLocation = new Translation2d(0.340, 0.285);
